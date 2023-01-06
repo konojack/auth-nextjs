@@ -1,7 +1,19 @@
+
+@sessionToken = next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..25t4BfI7G625pAdo._CNSmpMBjfs4POkIR63It2Z3y09QocYId0ih0T90VwNGzybatLNM78Q8KFP-tMNDb70kFDUsXbmIvqdqZ43hubznaC4aGrqnTsFNqiQLCxrod3E51soI7BHvdFsn-3gPqrww7w3L6qjLPkZrpXyI3ArKOCicgUemAEQ.WH_YLULHcAFocfRH4yBmEg
 POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
   "email": "dupaaaaasdd@op.pl",
   "password": "Halinka10"
+}
+
+###
+PATCH http://localhost:3000/api/user/change-password
+Cookie: {{sessionToken}}
+Content-Type: application/json
+
+{
+  "oldPassword": "fdhgdgfh",
+  "newPassword": "Kokosdfgsdfhjdh12345678"
 }
