@@ -3,12 +3,11 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { hashPassword, verifyPassword } from '../../../lib/auth';
 import { connectToDatabase } from '../../../lib/db';
 
-export default NextAuth({
+export const authOptions = {
   session: { strategy: 'jwt' },
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
-        console.log(credentials);
         const client = await connectToDatabase();
 
         const usersCollection = client.db().collection('users');
@@ -21,8 +20,6 @@ export default NextAuth({
           throw new Error('No user found!');
         }
 
-        console.log(credentials.password);
-        console.log(user.password);
         const isValid = await verifyPassword(
           credentials.password,
           user.password
@@ -40,4 +37,29 @@ export default NextAuth({
       },
     }),
   ],
-});
+  callbacks: {
+    async session({ session, user, token }) {
+      console.log('SESSION TOKEN', token);
+      let userData;
+      if (token) {
+        userData = {
+          email: token.email,
+          expires: session.expires,
+          superUser: token.superUser,
+        };
+      }
+
+      return userData;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.email = user.email;
+        token.superUser = true;
+      }
+
+      return token;
+    },
+  },
+};
+
+export default NextAuth(authOptions);
